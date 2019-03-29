@@ -33,8 +33,7 @@ class Grimoire:
         view.skip_ws()
         request = view.read_rest()
         search = request.replace(' ', '-')
-        search.lower()
-        url = "https://thegrimoire.xyz/spells/" + search
+        url = "https://thegrimoire.xyz/spells/" + search.lower()
         return url
 
     @staticmethod

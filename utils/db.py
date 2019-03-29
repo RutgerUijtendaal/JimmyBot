@@ -2,6 +2,7 @@
 
 from threading import Thread
 from queue import Queue
+import logging
 
 from discord.ext.commands.view import StringView
 
@@ -10,6 +11,12 @@ from firebase_admin import credentials
 from firebase_admin import firestore
 
 from google.cloud.exceptions import Conflict
+
+logger = logging.getLogger('firebase')
+logger.setLevel(logging.INFO)
+handler = logging.FileHandler(filename='firebase.log', encoding='utf-8', mode='w')
+handler.setFormatter(logging.Formatter('%(asctime)s:%(levelname)s:%(name)s: %(message)s'))
+logger.addHandler(handler)
 
 
 class Database(Thread):
@@ -54,11 +61,15 @@ class Database(Thread):
             "user_name": author.name
         }
 
+        # If user already exists ignore
+        if self.firestore.collection('users').document(author.id).get().exists:
+            return
+
         try:
             self.firestore.collection('users').add(
                 document_data=user_data, document_id=author.id)
         except Conflict as e:
-            print(e)
+            logger.error(e)
 
         self._user_cache.append(author.id)
 
@@ -68,11 +79,15 @@ class Database(Thread):
             "server_name": server.name
         }
 
+        # If server already exists ignore
+        if self.firestore.collection('servers').document(server.id).get().exists:
+            return
+
         try:
             self.firestore.collection('servers').add(
                 document_data=server_data, document_id=server.id)
         except Conflict as e:
-            print(e)
+            logger.error(e)
 
         self._server_cache.append(server.id)
 
@@ -89,5 +104,7 @@ class Database(Thread):
             "timestamp": message.timestamp
         }
 
-        self.firestore.collection('requests').add(
-            document_data=request_data, document_id=message.id)
+        try:
+            self.firestore.collection('requests').add(document_data=request_data, document_id=message.id)
+        except Conflict as e:
+            logger.error(e)

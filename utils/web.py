@@ -2,7 +2,9 @@
 
 import asyncio
 import aiohttp
+import logging
 
+logger = logging.getLogger('discord')
 
 async def download_page(url):
     headers = {}
@@ -13,5 +15,6 @@ async def download_page(url):
             async with session.get(url, headers=headers) as r:
                 if r.status == 200:
                     return await r.text()
-    except Exception:
+    except Exception as e:
+        logger.error(e)
         return None

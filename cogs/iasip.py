@@ -2,18 +2,22 @@
 
 import textwrap
 import os
+import logging
 
 from discord.ext import commands
 from PIL import ImageFont
 from PIL import Image
 from PIL import ImageDraw
 
+logger = logging.getLogger('discord')
+
 
 class IASIP:
     """IASIP card maker"""
 
+    fileDir = os.path.dirname(os.path.realpath('__file__'))
     font = ImageFont.truetype(
-        '/usr/share/fonts/truetype/freefont/Textile.ttf', 85)
+        fileDir + '/resources/font.ttf', 85)
 
     def __init__(self, bot):
         self.bot = bot
@@ -58,8 +62,8 @@ class IASIP:
     def make_directory():
         try:
             os.mkdir('iasip/')
-        except Exception:
-            pass
+        except Exception as e:
+            logger.error(e)
 
 
 def setup(bot):
