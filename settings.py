@@ -9,5 +9,6 @@ INITIAL_EXTENSIONS = (
     "cogs.wiki",
     "cogs.monsterhunter",
     "cogs.iasip",
-    "cogs.youtube"
+    "cogs.youtube",
+    "cogs.mtg"
 )

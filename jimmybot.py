@@ -1,10 +1,14 @@
 #!/usr/local/bin/python3
 
+import logging
+
 from discord.ext import commands
 from discord.ext.commands.view import StringView
 
 from utils.db import Database
 import settings
+
+logger = logging.getLogger('discord')
 
 
 class Jimmybot(commands.Bot):
@@ -15,6 +19,7 @@ class Jimmybot(commands.Bot):
 
     async def close(self):
         self.db.close()
+        logger.info('closing bot')
         await super().close()
 
     async def on_message(self, message):

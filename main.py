@@ -44,10 +44,11 @@ def main():
         except Exception as e:
             logger.error('Error loading extension: ' + extension + ' ' + e.args[0])
 
-    try:
-        bot.run(discord_token)
-    except Exception as e:
-        logger.error('Error in bot' + e.args[0])
+    while True:
+        try:
+            bot.run(discord_token)
+        except Exception as e:
+            logger.error(e)
 
 
 if __name__ == "__main__":

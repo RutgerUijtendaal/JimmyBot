@@ -6,6 +6,7 @@ import logging
 
 logger = logging.getLogger('discord')
 
+
 async def download_page(url):
     headers = {}
     headers['User-Agent'] = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.100 Safari/537.36"
