@@ -5,12 +5,12 @@ from utils import web
 import json
 
 
-class MTG:
+class MTG(commands.Cog):
     """MTG Card images"""
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def mtg(self, ctx):
         """[search]. Get the closest matching MTG card"""
         ctx.view.skip_ws()
@@ -22,7 +22,7 @@ class MTG:
         response = await web.download_page(url)
 
         if not response:
-            await self.bot.send_message(ctx.message.channel, 'Could not find any cards matching this search.')
+            await ctx.send('Could not find any cards matching this search.')
             return
 
         card = json.loads(response)
@@ -31,7 +31,7 @@ class MTG:
             return
 
         if card['object'] == 'card':
-            await self.bot.send_message(ctx.message.channel, card['image_uris']['normal'])
+            await ctx.send(card['image_uris']['normal'])
 
 
 def setup(bot):

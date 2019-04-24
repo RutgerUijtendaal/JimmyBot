@@ -10,45 +10,45 @@ from discord.ext import commands
 from utils import web
 
 
-class Youtube:
+class Youtube(commands.Cog):
     """Youtube Video Searcher"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def yt(self, ctx):
         """[search]. Get the first Youtube result"""
         url = Youtube.build_url_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("Couldn't grab the requested page")
+            await ctx.send("Couldn't grab the requested page")
             return
 
         link = Youtube.get_youtube_link(page)
 
         if not link:
-            await self.bot.say("Page returned wasn't Youtube")
+            await ctx.send("Page returned wasn't Youtube")
 
-        await self.bot.say(link)
+        await ctx.send(link)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def ryt(self, ctx):
         """[search]. Get a random Youtube result"""
         url = Youtube.build_url_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("Couldn't grab the requested page")
+            await ctx.send("Couldn't grab the requested page")
             return
 
         link = Youtube.get_youtube_link(page, random=True)
 
         if not link:
-            await self.bot.say("Page returned wasn't Youtube")
+            await ctx.send("Page returned wasn't Youtube")
 
-        await self.bot.say(link)
+        await ctx.send(link)
 
     @staticmethod
     def build_url_from_view(view):

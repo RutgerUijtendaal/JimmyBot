@@ -50,61 +50,65 @@ class Database(Thread):
         if message.author.id not in self._user_cache:
             self.add_user(message.author)
 
-        if message.server.id not in self._server_cache:
-            self.add_server(message.server)
+        if message.guild.id not in self._server_cache:
+            self.add_server(message.guild)
 
         self.add_message(message)
 
     def add_user(self, author):
+        author_id = str(author.id)
+
         user_data = {
-            "user_id": author.id,
+            "user_id": author_id,
             "user_name": author.name
         }
 
         # If user already exists ignore
-        if self.firestore.collection('users').document(author.id).get().exists:
+        if self.firestore.collection('users').document(author_id).get().exists:
             return
 
         try:
             self.firestore.collection('users').add(
-                document_data=user_data, document_id=author.id)
+                document_data=user_data, document_id=author_id)
         except Conflict as e:
             logger.error(e)
 
-        self._user_cache.append(author.id)
+        self._user_cache.append(author_id)
 
     def add_server(self, server):
+        server_id = str(server.id)
+
         server_data = {
-            "server_id": server.id,
+            "server_id": server_id,
             "server_name": server.name
         }
 
         # If server already exists ignore
-        if self.firestore.collection('servers').document(server.id).get().exists:
+        if self.firestore.collection('servers').document(server_id).get().exists:
             return
 
         try:
             self.firestore.collection('servers').add(
-                document_data=server_data, document_id=server.id)
+                document_data=server_data, document_id=server_id)
         except Conflict as e:
             logger.error(e)
 
-        self._server_cache.append(server.id)
+        self._server_cache.append(server_id)
 
     def add_message(self, message):
         view = StringView(message.content)
         command = view.get_word()
 
         request_data = {
-            "message_id": message.id,
-            "user_id": message.author.id,
-            "server_id": message.server.id,
+            "message_id": str(message.id),
+            "user_id": str(message.author.id),
+            "server_id": str(message.guild.id),
             "command": command,
             "content": view.read_rest(),
-            "timestamp": message.timestamp
+            "timestamp": message.created_at
         }
 
         try:
-            self.firestore.collection('requests').add(document_data=request_data, document_id=message.id)
+            self.firestore.collection('requests').add(document_data=request_data, document_id=str(message.id))
         except Conflict as e:
             logger.error(e)

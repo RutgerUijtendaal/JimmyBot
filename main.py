@@ -14,8 +14,6 @@ except ImportError:
 else:
     asyncio.set_event_loop_policy(uvloop.EventLoopPolicy())
 
-help_attrs = dict(hidden=True)
-
 
 logger = logging.getLogger('discord')
 logger.setLevel(logging.INFO)
@@ -32,8 +30,7 @@ def load_auth():
 def main():
     bot = Jimmybot(command_prefix=settings.PREFIX,
                    description=settings.DESCRIPTION,
-                   pm_help=None,
-                   help_attrs=help_attrs)
+                   pm_help=None)
     auth = load_auth()
     discord_token = auth['discord_token']
     bot.client_id = auth['discord_client_id']
@@ -44,11 +41,10 @@ def main():
         except Exception as e:
             logger.error('Error loading extension: ' + extension + ' ' + e.args[0])
 
-    while True:
-        try:
-            bot.run(discord_token)
-        except Exception as e:
-            logger.error(e)
+    try:
+        bot.run(discord_token)
+    except Exception as e:
+        logger.error(e)
 
 
 if __name__ == "__main__":

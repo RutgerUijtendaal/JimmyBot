@@ -10,47 +10,47 @@ from discord.ext import commands
 from utils import web
 
 
-class Image:
+class Image(commands.Cog):
     """Google Image Searcher"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def i(self, ctx):
         """[search]. Get the first Google Image result"""
         url = Image.build_url_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("Couldn't grab the requested page")
+            await ctx.send("Couldn't grab the requested page")
             return
 
         link = Image.get_image_link(page)
 
         if not link:
-            await self.bot.say("Page returned wasn't Google Images")
+            await ctx.send("Page returned wasn't Google Images")
             return
 
-        await self.bot.say(link)
+        await ctx.send(link)
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def ri(self, ctx):
         """[search]. Get a random Google Image result"""
         url = Image.build_url_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("Couldn't grab the requested page")
+            await ctx.send("Couldn't grab the requested page")
             return
 
         link = Image.get_image_link(page, random=True)
 
         if not link:
-            await self.bot.say("Page returned wasn't Google Images")
+            await ctx.send("Page returned wasn't Google Images")
             return
 
-        await self.bot.say(link)
+        await ctx.send(link)
 
     @staticmethod
     def build_url_from_view(view):

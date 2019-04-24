@@ -7,25 +7,25 @@ from discord.ext import commands
 from utils import web
 
 
-class MonsterHunter:
+class MonsterHunter(commands.Cog):
     """Monster Hunter Skill list"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def mh(self, ctx):
         """[search]. Get the full description for a spell in Monsterhunter"""
         url = MonsterHunter.build_link_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("Couldn't grab the requested page")
+            await ctx.send("Couldn't grab the requested page")
             return
 
         message = MonsterHunter.build_message_from_page(page)
 
-        await self.bot.say(message)
+        await ctx.send(message)
 
     @staticmethod
     def build_link_from_view(view):

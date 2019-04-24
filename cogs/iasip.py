@@ -4,6 +4,7 @@ import textwrap
 import os
 import logging
 
+import discord
 from discord.ext import commands
 from PIL import ImageFont
 from PIL import Image
@@ -12,7 +13,7 @@ from PIL import ImageDraw
 logger = logging.getLogger('discord')
 
 
-class IASIP:
+class IASIP(commands.Cog):
     """IASIP card maker"""
 
     fileDir = os.path.dirname(os.path.realpath('__file__'))
@@ -23,16 +24,16 @@ class IASIP:
         self.bot = bot
         IASIP.make_directory()
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def sunny(self, ctx):
         """[text]. Create a title card for IASIP."""
         text = IASIP.build_text_from_view(ctx.view)
         img = IASIP.build_image_from_text(text)
 
-        path = "iasip/" + ctx.message.id + ".png"
+        path = "iasip/" + str(ctx.message.id) + ".png"
         img.save(path)
 
-        await self.bot.send_file(ctx.message.channel, path)
+        await ctx.send(file=discord.File(path))
 
         img.close()
 

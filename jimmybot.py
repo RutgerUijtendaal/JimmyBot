@@ -33,8 +33,14 @@ class Jimmybot(commands.Bot):
         view.skip_string(settings.PREFIX)
         invoker = view.get_word()
 
-        if invoker not in self.commands:
+        for command in self.commands:
+            if invoker == command.name:
+                break
+        else:
             message.content = message.content[:1] + "i " + message.content[1:]
+
+        # if invoker not in self.commands.name:
+        #     message.content = message.content[:1] + "i " + message.content[1:]
 
         # Allow for the command to be processed by discord.py
         await self.process_commands(message)

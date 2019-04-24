@@ -8,25 +8,25 @@ from discord.ext import commands
 from utils import web
 
 
-class Grimoire:
+class Grimoire(commands.Cog):
     """Grimoire Spell descriptions"""
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    @commands.command()
     async def grim(self, ctx):
         """[search]. Get the full description for a spell on Grimoire"""
         url = Grimoire.build_url_from_view(ctx.view)
         page = await web.download_page(url)
 
         if not page:
-            await self.bot.say("That probably isn't a spell")
+            await ctx.send("That probably isn't a spell")
             return
 
         message = Grimoire.build_message_from_page(page)
 
-        await self.bot.say(message)
+        await ctx.send(message)
 
     @staticmethod
     def build_url_from_view(view):
